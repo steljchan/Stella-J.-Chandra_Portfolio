@@ -1,0 +1,1742 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stella J. Chandra - Portfolio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class'
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+    
+    /* Base Styles */
+    body {
+      font-family: 'Poppins', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Solid Color Button (mengganti gradient) */
+    .btn-solid {
+      background-color: #ec4899;
+      transition: all 0.3s ease;
+    }
+
+    .btn-solid:hover {
+      background-color: #db2777;
+      box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
+    }
+
+    /* Glass Card Effect */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .dark .glass-card {
+      background: rgba(0, 0, 0, 0.1);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Floating Animation */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-12px); }
+    }
+
+    .floating {
+      animation: float 3s ease-in-out infinite;
+      will-change: transform;
+    }
+
+    /* Mobile Menu */
+    #mobile-menu {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #mobile-menu.show {
+      max-height: 500px;
+    }
+
+    /* Experience Cards */
+    .experience-card {
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      cursor: pointer;
+      will-change: transform;
+    }
+
+    .experience-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px -5px rgba(236, 72, 153, 0.3);
+    }
+
+    .experience-details {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .experience-details.active {
+      max-height: 500px;
+    }
+
+    /* Audio Control */
+    .audio-control {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      will-change: transform;
+    }
+
+    .audio-control:hover {
+      transform: scale(1.1);
+    }
+
+    .dark .audio-control {
+      background: rgba(0, 0, 0, 0.8);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Particles Background */
+    .particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      background-color: #ec4899;
+      border-radius: 50%;
+      opacity: 0.3;
+      will-change: transform;
+    }
+
+    /* Reduced Motion Preferences */
+    @media (prefers-reduced-motion: reduce) {
+      .floating, 
+      .experience-card,
+      .experience-details {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .glass-card {
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+      }
+      
+      .audio-control {
+        width: 45px;
+        height: 45px;
+        bottom: 15px;
+        right: 15px;
+      }
+    }
+
+    /* Dark Mode Base Colors */
+    .dark {
+      --bg-primary: #1a1a1a;
+      --bg-secondary: #2d2d2d;
+      --text-primary: #f5f5f5;
+      --text-secondary: #d1d1d1;
+      --text-tertiary: #a1a1a1;
+      --border-color: #3d3d3d;
+      --accent-color: #ec4899;
+    }
+
+    /* Terapkan warna dasar */
+    .dark body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+    }
+
+    .dark .glass-card {
+      background: rgba(30, 30, 30, 0.7);
+      border-color: var(--border-color);
+    }
+
+    .dark .btn-solid {
+      background-color: var(--accent-color);
+    }
+  </style>
+
+<!-- Music Player -->
+<div class="music-player dark:bg-gray-800">
+    <button id="audioControl" class="audio-control">🔇</button>
+    <span id="nowPlaying">No song playing</span>
+</div>
+
+<script>
+    // Music player functionality
+    const songs = [
+        {
+            title: "Attention",
+            src: "Lagu 1.mp3",  // Make sure this file exists in your project directory
+            icon: "🎵"
+        },
+        {
+            title: "Rose",
+            src: "Lagu 2.mp3",  // Make sure this file exists in your project directory
+            icon: "🎶"
+        },
+    ];
+
+    let currentSongIndex = 0;
+    const audio = new Audio();
+    let isPlaying = false;
+    const audioIcon = document.getElementById('audioControl');
+    const nowPlaying = document.getElementById('nowPlaying');
+    const musicPlayer = document.querySelector('.music-player');
+
+    function loadSong(index) {
+        audio.src = songs[index].src;
+        nowPlaying.textContent = songs[index].title;
+        audioIcon.textContent = songs[index].icon;
+    }
+
+    function playSong() {
+        audio.play()
+            .then(() => {
+                isPlaying = true;
+                audioIcon.textContent = "🔊"; // Speaker icon when playing
+            })
+            .catch(error => {
+                console.error("Audio playback failed:", error);
+                // Show error to user
+                nowPlaying.textContent = "Error loading song";
+            });
+    }
+
+    function pauseSong() {
+        audio.pause();
+        isPlaying = false;
+        audioIcon.textContent = "🔇"; // Muted icon when paused
+    }
+
+    function toggleAudio() {
+        if (isPlaying) {
+            pauseSong();
+        } else {
+            playSong();
+        }
+    }
+
+    function nextSong() {
+        currentSongIndex = (currentSongIndex + 1) % songs.length;
+        loadSong(currentSongIndex);
+        if (isPlaying) {
+            playSong();
+        }
+    }
+
+    // Initialize first song
+    loadSong(0);
+
+    // Event listeners
+    audioControl.addEventListener('click', toggleAudio);
+    
+    // When song ends, play next
+    audio.addEventListener('ended', nextSong);
+
+    // Optional: Keyboard spacebar control
+    document.addEventListener('keydown', (e) => {
+        if (e.code === 'Space') {
+            e.preventDefault();
+            toggleAudio();
+        }
+    });
+
+    // Show/hide music player when mouse moves
+    let timeout;
+    document.addEventListener('mousemove', () => {
+        musicPlayer.style.opacity = '1';
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            musicPlayer.style.opacity = '0.5';
+        }, 3000);
+    });
+
+    // Initialize with semi-transparent
+    musicPlayer.style.opacity = '0.5';
+    musicPlayer.style.transition = 'opacity 0.3s ease';
+</script>
+  
+<!-- Particles -->
+<div class="particles" id="particles"></div>
+
+<header class="bg-white dark:bg-gray-900 shadow-md sticky top-0 z-50">
+  <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-pink-500 dark:text-pink-400">Stella J. Chandra</h1>
+    
+    <!-- Desktop Navigation -->
+    <div class="hidden md:flex space-x-6 items-center">
+      <a href="#home" class="nav-link hover:text-pink-500 dark:hover:text-pink-400 transition-colors">Home</a>
+      <a href="#about" class="nav-link hover:text-pink-500 dark:hover:text-pink-400 transition-colors">About</a>
+      <a href="#skills" class="nav-link hover:text-pink-500 dark:hover:text-pink-400 transition-colors">Skills</a>
+      <a href="#experience" class="nav-link hover:text-pink-500 dark:hover:text-pink-400 transition-colors">Experience</a>
+      <a href="#education" class="nav-link hover:text-pink-500 dark:hover:text-pink-400 transition-colors">Education</a>
+      <a href="#projects" class="nav-link hover:text-pink-500 dark:hover:text-pink-400 transition-colors">Projects</a>
+      <a href="#contact" class="nav-link hover:text-pink-500 dark:hover:text-pink-400 transition-colors">Contact</a>
+      <button id="dark-mode-toggle" class="px-3 py-1 bg-pink-200 dark:bg-pink-600 rounded-full hover:scale-105 transition-all flex items-center">
+        <span id="moon-icon" class="dark:hidden">🌙</span>
+        <span id="sun-icon" class="hidden dark:inline">☀️</span>
+      </button>
+    </div>
+    
+    <!-- Mobile Menu Button -->
+    <button id="mobile-menu-button" class="md:hidden text-xl focus:outline-none" aria-label="Toggle menu">
+      <span id="menu-icon">☰</span>
+    </button>
+  </div>
+  
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="md:hidden px-4 pb-4 bg-white dark:bg-gray-900 hidden">
+    <div class="space-y-2">
+      <a href="#home" class="nav-link block py-2 hover:text-pink-500 dark:hover:text-pink-400 transition-colors">Home</a>
+      <a href="#about" class="nav-link block py-2 hover:text-pink-500 dark:hover:text-pink-400 transition-colors">About</a>
+      <a href="#skills" class="nav-link block py-2 hover:text-pink-500 dark:hover:text-pink-400 transition-colors">Skills</a>
+      <a href="#experience" class="nav-link block py-2 hover:text-pink-500 dark:hover:text-pink-400 transition-colors">Experience</a>
+      <a href="#education" class="nav-link block py-2 hover:text-pink-500 dark:hover:text-pink-400 transition-colors">Education</a>
+      <a href="#projects" class="nav-link block py-2 hover:text-pink-500 dark:hover:text-pink-400 transition-colors">Projects</a>
+      <a href="#contact" class="nav-link block py-2 hover:text-pink-500 dark:hover:text-pink-400 transition-colors">Contact</a>
+      <button id="mobile-dark-mode-toggle" class="w-full text-left py-2 px-3 rounded hover:bg-pink-100 dark:hover:bg-pink-900 transition-colors flex items-center">
+        <span class="mr-2">Toggle Theme:</span>
+        <span id="mobile-moon-icon" class="dark:hidden">🌙 Dark</span>
+        <span id="mobile-sun-icon" class="hidden dark:inline">☀️ Light</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // 1. DARK MODE SYSTEM (TIDAK DIUBAH)
+    const initDarkMode = () => {
+      const html = document.documentElement;
+      const savedMode = localStorage.getItem('darkMode');
+      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      
+      const isDark = savedMode !== null ? savedMode === 'true' : systemPrefersDark;
+      html.classList.toggle('dark', isDark);
+      updateDarkModeIcons(isDark);
+      
+      if (savedMode === null) {
+        localStorage.setItem('darkMode', isDark);
+      }
+    };
+
+    const updateDarkModeIcons = (isDark) => {
+      document.getElementById('moon-icon')?.classList?.toggle('hidden', isDark);
+      document.getElementById('sun-icon')?.classList?.toggle('hidden', !isDark);
+      document.getElementById('mobile-moon-icon')?.classList?.toggle('hidden', isDark);
+      document.getElementById('mobile-sun-icon')?.classList?.toggle('hidden', !isDark);
+    };
+
+    const toggleDarkMode = () => {
+      const html = document.documentElement;
+      const isDark = !html.classList.contains('dark');
+      html.classList.toggle('dark', isDark);
+      localStorage.setItem('darkMode', isDark);
+      updateDarkModeIcons(isDark);
+    };
+
+    // 2. IMPROVED MENU SYSTEM (DIPERBAIKI)
+    let menuOpen = false;
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIcon = document.getElementById('menu-icon');
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+
+    const toggleMenu = () => {
+      menuOpen = !menuOpen;
+      
+      if (mobileMenu && menuIcon) {
+        mobileMenu.classList.toggle('hidden', !menuOpen);
+        menuIcon.textContent = menuOpen ? '✕' : '☰';
+        document.body.style.overflow = menuOpen ? 'hidden' : '';
+      }
+    };
+
+    const handleResponsiveMenu = () => {
+      const desktopNav = document.querySelector('.md\\:flex');
+      
+      if (window.innerWidth < 768) { // Mobile view
+        desktopNav?.classList?.add('hidden');
+        mobileMenuButton?.classList?.remove('hidden');
+        
+        if (menuOpen && mobileMenu) {
+          mobileMenu.classList.remove('hidden');
+        } else if (mobileMenu) {
+          mobileMenu.classList.add('hidden');
+        }
+      } else { // Desktop view
+        desktopNav?.classList?.remove('hidden');
+        mobileMenuButton?.classList?.add('hidden');
+        
+        if (mobileMenu) {
+          mobileMenu.classList.add('hidden');
+          menuOpen = false;
+          menuIcon.textContent = '☰';
+          document.body.style.overflow = '';
+        }
+      }
+    };
+
+    // 3. INITIALIZATION
+    initDarkMode();
+    handleResponsiveMenu();
+    
+    // Debounce untuk resize event
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        handleResponsiveMenu();
+      }, 100);
+    });
+    
+    // 4. EVENT LISTENERS
+    // Dark mode listeners (TIDAK DIUBAH)
+    document.getElementById('dark-mode-toggle')?.addEventListener('click', toggleDarkMode);
+    document.getElementById('mobile-dark-mode-toggle')?.addEventListener('click', toggleDarkMode);
+    
+    // Menu listener (DIPERBAIKI)
+    if (mobileMenuButton) {
+      mobileMenuButton.addEventListener('click', (e) => {
+        e.stopPropagation(); // Mencegah bubbling
+        toggleMenu();
+      });
+    }
+    
+    // Tutup menu saat klik link atau area lain
+    document.addEventListener('click', (e) => {
+      if (menuOpen && window.innerWidth < 768) {
+        if (!mobileMenu.contains(e.target) && e.target !== mobileMenuButton) {
+          toggleMenu();
+        }
+      }
+    });
+  });
+
+  // System preference changes (TIDAK DIUBAH)
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    if (localStorage.getItem('darkMode') === null) {
+      const isDark = e.matches;
+      document.documentElement.classList.toggle('dark', isDark);
+      updateDarkModeIcons(isDark);
+    }
+  });
+</script>
+
+<style>
+  /* Tambahkan style ini untuk memastikan menu tampil dengan benar */
+  @media (max-width: 767px) {
+    #mobile-menu {
+      position: fixed;
+      top: 68px; /* Sesuaikan dengan tinggi header */
+      left: 0;
+      right: 0;
+      z-index: 40;
+      background-color: white;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    
+    .dark #mobile-menu {
+      background-color: #1f2937;
+    }
+    
+    #mobile-menu-button {
+      z-index: 50;
+    }
+  }
+</style>
+
+<!-- Hero Section with Animations -->
+<section id="home" class="min-h-screen flex items-center justify-center flex-col px-4 relative dark:bg-[var(--bg-primary)] animate-float-up">
+  <!-- Main Content -->
+  <div class="relative z-10 text-center">
+    <div class="relative inline-block animate-fade-in" style="--delay: 0.2s">
+      <img src="StellaPhoto.jpg" alt="Stella J. Chandra" 
+          class="w-48 h-48 rounded-full mx-auto shadow-lg mb-8 object-cover floating border-4 border-pink-500 dark:border-pink-400">
+      <div class="absolute -bottom-2 -right-2 bg-pink-500 dark:bg-pink-600 rounded-full w-12 h-12 flex items-center justify-center animate-wave" style="--delay: 0.3s">
+        <span class="text-white text-2xl wave-hand">👋</span>
+      </div>
+    </div>
+    <h2 class="text-4xl md:text-5xl font-bold mb-4 text-center animate-fade-in" style="--delay: 0.4s">
+      Hi, I'm <span class="text-pink-500 dark:text-pink-400">Stella</span>
+    </h2>
+    <p class="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl text-center mx-auto animate-fade-in" style="--delay: 0.5s">
+      Informatics Student | AI Enthusiast | Creative Problem Solver
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in" style="--delay: 0.6s">
+      <a href="#contact" class="bg-pink-500 dark:bg-pink-600 text-white px-6 py-3 rounded-full font-medium hover:bg-pink-600 dark:hover:bg-pink-700 transition-all text-center shadow-md hover:shadow-lg">
+        Contact Me
+      </a>
+      <a href="#projects" class="px-6 py-3 border-2 border-pink-500 dark:border-pink-400 text-pink-500 dark:text-pink-400 rounded-full font-medium hover:bg-pink-500 hover:text-white dark:hover:bg-pink-600 transition-all text-center hover:shadow-md">
+        View Projects
+      </a>
+    </div>
+  </div>
+  
+  <!-- Down Arrow -->
+  <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20">
+    <button id="down-arrow" class="animate-bounce focus:outline-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-pink-500 dark:text-pink-400 hover:text-pink-600 dark:hover:text-pink-300 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+      </svg>
+    </button>
+  </div>
+</section>
+
+<!-- About Me Section with Scroll Animations -->
+<section id="about" class="max-w-5xl mx-auto px-4 py-20 dark:bg-[var(--bg-primary)]">
+  <div class="text-center mb-12 scroll-animate" style="--delay: 0.1s">
+    <h3 class="text-4xl font-bold mb-4 dark:text-[var(--text-primary)]">About <span class="text-pink-500 dark:text-[var(--accent-color)]">Me</span></h3>
+  </div>
+  
+  <div class="bg-white dark:bg-[var(--bg-secondary)] rounded-2xl shadow-xl p-8 md:p-10 max-w-4xl mx-auto border border-gray-100 dark:border-[var(--border-color)] scroll-animate" style="--delay: 0.2s">
+    <p class="text-gray-700 dark:text-[var(--text-secondary)] scroll-animate" style="--delay: 0.3s">
+      I am a passionate Informatics student with a keen interest in Artificial Intelligence and Web Development. 
+      I enjoy solving mathematical problems and exploring new technologies. My goal is to create innovative 
+      solutions that bridge the gap between technology and real-world applications.
+    </p>
+    
+    <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6">
+      <!-- Skill Cards with staggered animation -->
+      <div class="skill-card scroll-animate" style="--delay: 0.4s">
+        <div class="skill-icon">💻</div>
+        <h4 class="skill-title">Web Development</h4>
+        <p class="skill-subtitle">Frontend & Backend</p>
+      </div>
+      
+      <div class="skill-card scroll-animate" style="--delay: 0.5s">
+        <div class="skill-icon">🧠</div>
+        <h4 class="skill-title">AI & ML</h4>
+        <p class="skill-subtitle">Machine Learning</p>
+      </div>
+      
+      <div class="skill-card scroll-animate" style="--delay: 0.6s">
+        <div class="skill-icon">📊</div>
+        <h4 class="skill-title">Data Science</h4>
+        <p class="skill-subtitle">Analysis & Viz</p>
+      </div>
+      
+      <div class="skill-card scroll-animate" style="--delay: 0.7s">
+        <div class="skill-icon">🎨</div>
+        <h4 class="skill-title">UI/UX Design</h4>
+        <p class="skill-subtitle">User Experience</p>
+      </div>
+    </div>
+    
+    <!-- CV Button -->
+    <div class="text-center mt-14 scroll-animate" style="--delay: 0.8s">
+      <a href="CV STELLA J. CHANDRA.pdf" download class="download-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+        </svg>
+        Download My CV
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Skill Card Styles */
+  .skill-card {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    border: 1px solid #f3f4f6;
+    text-align: center;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dark .skill-card {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+  }
+
+  .skill-card:hover {
+    box-shadow: 0 10px 25px -5px rgba(236, 72, 153, 0.3), 
+                0 8px 10px -5px rgba(236, 72, 153, 0.1);
+    transform: translateY(-5px);
+  }
+
+  .skill-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #ec4899;
+    transition: all 0.3s ease;
+  }
+
+  .skill-card:hover .skill-icon {
+    transform: scale(1.1);
+  }
+
+  .skill-title {
+    font-weight: 600;
+    font-size: 1.125rem;
+    color: #1f2937;
+    margin-bottom: 0.25rem;
+    line-height: 1.3;
+  }
+
+  .dark .skill-title {
+    color: var(--text-primary);
+  }
+
+  .skill-subtitle {
+    font-size: 0.875rem;
+    color: #6b7280;
+    line-height: 1.4;
+  }
+
+  .dark .skill-subtitle {
+    color: var(--text-secondary);
+  }
+
+  /* Download Button */
+  .download-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.75rem 2rem;
+    background: linear-gradient(to right, #ec4899, #db2777);
+    color: white;
+    border-radius: 9999px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px -1px rgba(236, 72, 153, 0.3), 0 2px 4px -1px rgba(236, 72, 153, 0.1);
+  }
+
+  .download-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(236, 72, 153, 0.3), 0 4px 6px -2px rgba(236, 72, 153, 0.1);
+  }
+
+  /* Scroll Animation */
+  .scroll-animate {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  }
+  
+  .scroll-animate.animated {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Scroll Animation */
+  .scroll-animate {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  }
+  
+  .scroll-animate.animated {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Waving Hand Animation */
+  @keyframes wave {
+    0% { transform: rotate(0deg); }
+    10% { transform: rotate(14deg); }
+    20% { transform: rotate(-8deg); }
+    30% { transform: rotate(14deg); }
+    40% { transform: rotate(-4deg); }
+    50% { transform: rotate(10deg); }
+    60% { transform: rotate(0deg); }
+    100% { transform: rotate(0deg); }
+  }
+  
+  .animate-wave {
+    animation: wave 2s ease-in-out infinite;
+    animation-delay: var(--delay, 0);
+  }
+  
+  .wave-hand {
+    display: inline-block;
+    transform-origin: 70% 70%;
+  }
+
+  /* Floating Avatar Animation */
+  @keyframes floating {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+  
+  .floating {
+    animation: floating 3s ease-in-out infinite;
+  }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Scroll animation trigger
+  const scrollElements = document.querySelectorAll('.scroll-animate');
+  
+  const elementInView = (el) => {
+    const elementTop = el.getBoundingClientRect().top;
+    return (
+      elementTop <= (window.innerHeight || document.documentElement.clientHeight)
+    );
+  };
+  
+  const displayScrollElement = (element) => {
+    element.classList.add('animated');
+  };
+  
+  const handleScrollAnimation = () => {
+    scrollElements.forEach((el) => {
+      if (elementInView(el)) {
+        displayScrollElement(el);
+      }
+    });
+  };
+  
+  window.addEventListener('scroll', () => {
+    handleScrollAnimation();
+  });
+  
+  // Initialize - check if elements are already in view
+  handleScrollAnimation();
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Down arrow functionality
+  const arrow = document.getElementById('down-arrow');
+  let isHidden = false;
+  let isProgrammaticScroll = false;
+  let scrollStopTimer;
+
+  function smoothScrollTo(targetElement) {
+    isProgrammaticScroll = true;
+    
+    const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - 80;
+    const startPosition = window.pageYOffset;
+    const distance = targetPosition - startPosition;
+    const duration = 800;
+    let startTime = null;
+
+    function animation(currentTime) {
+      if (startTime === null) startTime = currentTime;
+      const timeElapsed = currentTime - startTime;
+      
+      const ease = function (t) {
+        return t<.5 ? 2*t*t : -1+(4-2*t)*t;
+      };
+      
+      const progress = Math.min(timeElapsed / duration, 1);
+      const easeProgress = ease(progress);
+      
+      window.scrollTo(0, startPosition + (distance * easeProgress));
+      
+      if (timeElapsed < duration) {
+        requestAnimationFrame(animation);
+      } else {
+        setTimeout(() => {
+          isProgrammaticScroll = false;
+        }, 100);
+      }
+    }
+
+    requestAnimationFrame(animation);
+  }
+
+  arrow.addEventListener('click', (e) => {
+    e.preventDefault();
+    const aboutSection = document.getElementById('about');
+    if (aboutSection) {
+      smoothScrollTo(aboutSection);
+    }
+  });
+
+  window.addEventListener('scroll', () => {
+    clearTimeout(scrollStopTimer);
+    
+    if (isProgrammaticScroll) return;
+
+    scrollStopTimer = setTimeout(() => {
+      const currentScrollY = window.scrollY;
+      
+      if (currentScrollY > 100 && !isHidden) {
+        hideArrow();
+      } else if (currentScrollY <= 50 && isHidden) {
+        showArrow();
+      }
+    }, 100);
+  });
+
+  const homeObserver = new IntersectionObserver((entries) => {
+    if (isProgrammaticScroll) return;
+    
+    entries.forEach(entry => {
+      if (entry.isIntersecting && entry.intersectionRatio >= 0.5 && isHidden) {
+        showArrow();
+      }
+    });
+  }, { threshold: [0.5] });
+
+  const homeSection = document.getElementById('home');
+  if (homeSection) {
+    homeObserver.observe(homeSection);
+  }
+
+  function hideArrow() {
+    arrow.classList.add('opacity-0', 'pointer-events-none');
+    isHidden = true;
+  }
+
+  function showArrow() {
+    arrow.classList.remove('opacity-0', 'pointer-events-none');
+    isHidden = false;
+  }
+
+  // Scroll animations for About Me section
+  const aboutSection = document.getElementById('about');
+  const scrollAnimateElements = document.querySelectorAll('.scroll-animate');
+
+  const aboutObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        scrollAnimateElements.forEach(el => {
+          const delay = el.style.getPropertyValue('--delay') || '0s';
+          el.style.transitionDelay = delay;
+          el.classList.add('animated');
+        });
+        aboutObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  if (aboutSection) {
+    aboutObserver.observe(aboutSection);
+  }
+});
+</script>
+
+<!-- Skills Section -->
+<section id="skills" class="max-w-5xl mx-auto px-4 py-20 dark:bg-[var(--bg-primary)]">
+  <div class="text-center mb-12">
+    <h3 class="text-4xl font-bold mb-4 dark:text-[var(--text-primary)]">My <span class="text-pink-500 dark:text-[var(--accent-color)]">Skills</span></h3>
+    <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">Technologies I've mastered and tools I work with</p>
+  </div>
+  
+  <div class="bg-white dark:bg-[var(--bg-secondary)] rounded-2xl shadow-xl p-8 md:p-10 max-w-4xl mx-auto border border-gray-100 dark:border-[var(--border-color)]">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <!-- HTML Skill -->
+      <div class="skill-card" onclick="showSkillPopup('HTML', 'Building the foundation of web pages with semantic markup. Proficient in HTML5 features and accessibility standards.', '🌐')">
+        <div class="skill-icon">🌐</div>
+        <h4 class="skill-title">HTML</h4>
+      </div>
+
+      <!-- CSS Skill -->
+      <div class="skill-card" onclick="showSkillPopup('CSS', 'Styling and responsive layout. Experienced with Flexbox, Grid, and modern CSS frameworks like Tailwind.', '🎨')">
+        <div class="skill-icon">🎨</div>
+        <h4 class="skill-title">CSS</h4>
+      </div>
+
+      <!-- JavaScript Skill -->
+      <div class="skill-card" onclick="showSkillPopup('JavaScript', 'Building interactive web applications. Experience with ES6+, React, Node.js, and modern JavaScript frameworks.', '📜')">
+        <div class="skill-icon">📜</div>
+        <h4 class="skill-title">JavaScript</h4>
+      </div>
+
+      <!-- Python Skill -->
+      <div class="skill-card" onclick="showSkillPopup('Python', 'Able to implement programming algorithms smoothly. Experience with data analysis, automation, and web frameworks.', '🐍')">
+        <div class="skill-icon">🐍</div>
+        <h4 class="skill-title">Python</h4>
+      </div>
+
+      <!-- Java Skill -->
+      <div class="skill-card" onclick="showSkillPopup('Java', 'Focused on Object-Oriented Programming. Experience with Java collections, multithreading, and Spring framework.', '☕')">
+        <div class="skill-icon">☕</div>
+        <h4 class="skill-title">Java</h4>
+      </div>
+
+      <!-- AI/ML Skill -->
+      <div class="skill-card" onclick="showSkillPopup('AI/ML', 'Machine learning algorithms, neural networks, and data modeling. Experience with TensorFlow and scikit-learn.', '🤖')">
+        <div class="skill-icon">🤖</div>
+        <h4 class="skill-title">AI/ML</h4>
+      </div>
+
+      <!-- Database Skill -->
+      <div class="skill-card" onclick="showSkillPopup('Database', 'SQL and NoSQL databases. Experience with MySQL, PostgreSQL, and MongoDB for data storage and retrieval.', '🗄️')">
+        <div class="skill-icon">🗄️</div>
+        <h4 class="skill-title">Database</h4>
+      </div>
+
+      <!-- UI/UX Skill -->
+      <div class="skill-card" onclick="showSkillPopup('UI/UX', 'Designing intuitive user interfaces. Experience with Figma, Adobe XD, and user-centered design principles.', '✨')">
+        <div class="skill-icon">✨</div>
+        <h4 class="skill-title">UI/UX</h4>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Skill Popup -->
+<div id="skill-popup" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50 p-4">
+  <div class="bg-white dark:bg-[var(--bg-secondary)] rounded-xl shadow-2xl max-w-md w-full p-6 transform transition-all duration-300 scale-95 opacity-0">
+    <div class="flex justify-between items-start mb-4">
+      <div class="flex items-center">
+        <div id="popup-icon" class="text-3xl mr-3"></div>
+        <h3 id="popup-title" class="text-xl font-bold dark:text-white"></h3>
+      </div>
+      <button onclick="closeSkillPopup()" class="text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-100">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    <p id="popup-description" class="text-gray-700 dark:text-gray-300"></p>
+  </div>
+</div>
+
+<style>
+  /* Skill Card Styles */
+  .skill-card {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    border: 1px solid rgba(236, 72, 153, 0.1);
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .dark .skill-card {
+    background-color: var(--bg-secondary);
+    border-color: rgba(219, 39, 119, 0.1);
+  }
+
+  .skill-card:hover {
+    box-shadow: 0 10px 15px -3px rgba(236, 72, 153, 0.3), 0 4px 6px -2px rgba(236, 72, 153, 0.15);
+    transform: translateY(-5px);
+    border-color: rgba(236, 72, 153, 0.3);
+  }
+
+  .dark .skill-card:hover {
+    box-shadow: 0 10px 15px -3px rgba(219, 39, 119, 0.3), 0 4px 6px -2px rgba(219, 39, 119, 0.15);
+    border-color: rgba(219, 39, 119, 0.3);
+  }
+
+  .skill-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    color: #ec4899;
+    transition: all 0.3s ease;
+  }
+
+  .dark .skill-icon {
+    color: #db2777;
+  }
+
+  .skill-title {
+    font-weight: 600;
+    font-size: 1.125rem;
+    text-align: center;
+    color: #1f2937;
+    transition: all 0.3s ease;
+  }
+
+  .dark .skill-title {
+    color: var(--text-primary);
+  }
+
+  .skill-card:hover .skill-icon {
+    transform: scale(1.1);
+  }
+
+  .skill-card:hover .skill-title {
+    color: #ec4899;
+  }
+
+  /* Floating Animation */
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+
+  .floating-section {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  /* Popup Styles */
+  #skill-popup {
+    transition: opacity 0.3s ease;
+  }
+
+  #skill-popup > div {
+    transition: all 0.3s ease;
+  }
+
+  #skill-popup.show {
+    display: flex;
+  }
+
+  #skill-popup.show > div {
+    transform: scale(1);
+    opacity: 1;
+  }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Add floating animation when section is in view
+  const skillsSection = document.querySelector('#skills');
+  
+  const floatObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('floating-section');
+      } else {
+        entry.target.classList.remove('floating-section');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  if (skillsSection) {
+    floatObserver.observe(skillsSection);
+  }
+});
+
+// Popup functions
+function showSkillPopup(title, description, icon) {
+  const popup = document.getElementById('skill-popup');
+  const popupTitle = document.getElementById('popup-title');
+  const popupDescription = document.getElementById('popup-description');
+  const popupIcon = document.getElementById('popup-icon');
+
+  popupTitle.textContent = title;
+  popupDescription.textContent = description;
+  popupIcon.textContent = icon;
+  
+  popup.classList.add('show');
+  setTimeout(() => {
+    popup.querySelector('div').classList.add('scale-100', 'opacity-100');
+  }, 10);
+}
+
+function closeSkillPopup() {
+  const popup = document.getElementById('skill-popup');
+  popup.querySelector('div').classList.remove('scale-100', 'opacity-100');
+  setTimeout(() => {
+    popup.classList.remove('show');
+  }, 300);
+}
+
+// Close popup when clicking outside
+document.getElementById('skill-popup').addEventListener('click', function(e) {
+  if (e.target === this) {
+    closeSkillPopup();
+  }
+});
+</script>
+
+<!-- Experience Section -->
+<section id="experience" class="max-w-5xl mx-auto px-4 py-20 dark:bg-[var(--bg-primary)]">
+  <div class="text-center mb-12">
+    <h3 class="text-4xl font-bold mb-4 dark:text-[var(--text-primary)] animate-fade-in" style="--delay: 0.1s">My <span class="text-pink-500 dark:text-[var(--accent-color)]">Experience</span></h3>
+  </div>
+  
+  <div class="bg-white dark:bg-[var(--bg-secondary)] rounded-2xl shadow-xl p-8 md:p-10 max-w-4xl mx-auto border border-gray-100 dark:border-[var(--border-color)]">
+    <div class="space-y-6">
+      <!-- Experience Item 1 -->
+      <div class="experience-card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl cursor-pointer animate-fade-in" style="--delay: 0.2s">
+        <div class="flex justify-between items-start" onclick="toggleExperienceDetails(this)">
+          <div>
+            <h4 class="text-xl font-bold text-pink-500 dark:text-pink-400">Informatics Student Union - Student Academic Division</h4>
+            <p class="text-gray-600 dark:text-[var(--text-secondary)] mt-2">
+              Responsible for data collection on student credits and organizing academic events.
+            </p>
+          </div>
+          <span class="expand-icon text-pink-500 dark:text-pink-400 text-2xl ml-4 transition-transform duration-300">+</span>
+        </div>
+        <div class="experience-details hidden mt-4 pl-2 border-l-4 border-pink-500 dark:border-pink-400">
+          <p class="text-gray-600 dark:text-gray-300">
+            • National Programming & Logic Competition 12th as Event Division<br>
+            • Prodi Day as Consumtion Division<br>
+            • DevForge as Secretary<br>
+            • Collaborated with faculty to improve student support services
+          </p>
+        </div>
+      </div>
+      
+      <!-- Experience Item 2 -->
+      <div class="experience-card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl cursor-pointer animate-fade-in" style="--delay: 0.3s">
+        <div class="flex justify-between items-start" onclick="toggleExperienceDetails(this)">
+          <div>
+            <h4 class="text-xl font-bold text-pink-500 dark:text-pink-400">O-Week 2025 - Coordinator of Advice and Mentoring Department</h4>
+            <p class="text-gray-600 dark:text-gray-300 mt-2">
+              Led a team of mentors of orientation week activities for new students.
+            </p>
+          </div>
+          <span class="expand-icon text-pink-500 dark:text-pink-400 text-2xl ml-4 transition-transform duration-300">+</span>
+        </div>
+        <div class="experience-details hidden mt-4 pl-2 border-l-4 border-pink-500 dark:border-pink-400">
+          <p class="text-gray-600 dark:text-gray-300">
+            • Managed a team of mentors for new students<br>
+            • Developed mentoring programs<br>
+            • Become Special IT Team<br>
+            • Created mentorship training materials still used today
+          </p>
+        </div>
+      </div>
+      
+      <!-- Experience Item 3 -->
+      <div class="experience-card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl cursor-pointer animate-fade-in" style="--delay: 0.4s">
+        <div class="flex justify-between items-start" onclick="toggleExperienceDetails(this)">
+          <div>
+            <h4 class="text-xl font-bold text-pink-500 dark:text-pink-400">Entrance 3.0 - Event Division</h4>
+            <p class="text-gray-600 dark:text-gray-300 mt-2">
+              Designed academic competition concepts and implemented data management systems.
+            </p>
+          </div>
+          <span class="expand-icon text-pink-500 dark:text-pink-400 text-2xl ml-4 transition-transform duration-300">+</span>
+        </div>
+        <div class="experience-details hidden mt-4 pl-2 border-l-4 border-pink-500 dark:border-pink-400">
+          <p class="text-gray-600 dark:text-gray-300">
+            • Designed competition structure for 100+ participants<br>
+            • Implemented Google Spreadsheets data management improving efficiency by 30%<br>
+            • Coordinated judging panel of 10 faculty members<br>
+            • Managed event logistics and participant communications
+          </p>
+        </div>
+      </div>
+      
+      <!-- Experience Item 4 -->
+      <div class="experience-card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl cursor-pointer animate-fade-in" style="--delay: 0.5s">
+        <div class="flex justify-between items-start" onclick="toggleExperienceDetails(this)">
+          <div>
+            <h4 class="text-xl font-bold text-pink-500 dark:text-pink-400">Infinity - Event Division</h4>
+            <p class="text-gray-600 dark:text-gray-300 mt-2">
+              Created concepts and organized thematic events with high attendance.
+            </p>
+          </div>
+          <span class="expand-icon text-pink-500 dark:text-pink-400 text-2xl ml-4 transition-transform duration-300">+</span>
+        </div>
+        <div class="experience-details hidden mt-4 pl-2 border-l-4 border-pink-500 dark:border-pink-400">
+          <p class="text-gray-600 dark:text-gray-300">
+            • Organized Mantai Halloween as Consumtion Divisition and appointed as the treasurer of the division<br>
+            • Organized Election Day as Head of the Event<br>
+            • Organized Mantai Christmas as Event Division<br>
+            • Organized Mantai Valentine as Consumtion Division<br>
+            • Organized Mantai Oscar Night as Equipment Division PIC<br>
+            • Organized Mantai Kartini as Decoration Event<br>
+            • Organized Mantai Funni Day as Event Division PIC
+          </p>
+        </div>
+      </div>
+      
+      <!-- Experience Item 5 -->
+      <div class="experience-card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl cursor-pointer animate-fade-in" style="--delay: 0.6s">
+        <div class="flex justify-between items-start" onclick="toggleExperienceDetails(this)">
+          <div>
+            <h4 class="text-xl font-bold text-pink-500 dark:text-pink-400">Faith and Diversity Buddha - Event Division</h4>
+            <p class="text-gray-600 dark:text-gray-300 mt-2">
+              Conceptualized and executed cultural events for FDU Buddha.
+            </p>
+          </div>
+          <span class="expand-icon text-pink-500 dark:text-pink-400 text-2xl ml-4 transition-transform duration-300">+</span>
+        </div>
+        <div class="experience-details hidden mt-4 pl-2 border-l-4 border-pink-500 dark:border-pink-400">
+          <p class="text-gray-600 dark:text-gray-300">
+            • Participating in Arak-arakan Dewa Celebrations<br>
+            • Organized Sebulan Pendalaman Dhamma<br>
+            • Organized Dhammatalk as Event Division PIC
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .experience-card {
+    transition: all 0.3s ease;
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  
+  .animate-fade-in {
+    animation: fade-in 0.6s ease-out forwards;
+    animation-delay: var(--delay, 0);
+  }
+  
+  @keyframes fade-in {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .experience-card:hover {
+    box-shadow: 0 10px 15px -3px rgba(236, 72, 153, 0.3), 
+                0 4px 6px -4px rgba(236, 72, 153, 0.3);
+    transform: translateY(-5px);
+  }
+  
+  .experience-details {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .experience-details:not(.hidden) {
+    max-height: 500px;
+  }
+  
+  .expand-icon {
+    transition: transform 0.3s ease;
+  }
+  
+  .experience-card:not(:hover) .expand-icon:hover {
+    transform: scale(1.2);
+  }
+</style>
+
+<script>
+  // Existing toggle function remains the same
+  function toggleExperienceDetails(element) {
+    const card = element.closest('.experience-card');
+    const details = card.querySelector('.experience-details');
+    const icon = card.querySelector('.expand-icon');
+    
+    details.classList.toggle('hidden');
+    icon.textContent = details.classList.contains('hidden') ? '+' : '-';
+    
+    document.querySelectorAll('.experience-card').forEach(otherCard => {
+      if (otherCard !== card) {
+        otherCard.querySelector('.experience-details').classList.add('hidden');
+        otherCard.querySelector('.expand-icon').textContent = '+';
+      }
+    });
+  }
+
+  // Add intersection observer for scroll animations
+  document.addEventListener('DOMContentLoaded', () => {
+    const experienceCards = document.querySelectorAll('.experience-card');
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    });
+
+    experienceCards.forEach(card => {
+      observer.observe(card);
+    });
+  });
+</script>
+
+<!-- Education Section -->
+<section id="education" class="max-w-5xl mx-auto px-4 py-16 dark:bg-[var(--bg-primary)]">
+  <h3 class="text-3xl font-semibold mb-12 text-center dark:text-[var(--text-primary)]">My <span class="text-pink-500 dark:text-[var(--accent-color)]">Education</span></h3>
+  
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- University Education Card -->
+    <div class="education-card bg-white dark:bg-[var(--bg-secondary)] p-6 rounded-xl shadow-lg transition-all hover:shadow-xl border border-gray-100 dark:border-[var(--border-color)] transform transition duration-500 hover:scale-[1.02] hover:shadow-pink-500/20">
+      <div class="flex flex-col md:flex-row justify-between">
+        <div>
+          <h4 class="text-xl font-bold text-gray-800 dark:text-white">Bachelor of Informatics</h4>
+          <p class="text-gray-600 dark:text-gray-300">Ciputra University Makassar</p>
+          <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Specialization in Artificial Intelligence</p>
+        </div>
+        <div class="mt-2 md:mt-0">
+          <span class="bg-pink-100 dark:bg-pink-900 text-pink-800 dark:text-pink-200 px-3 py-1 rounded-full text-sm font-medium">2024 - Present</span>
+        </div>
+      </div>
+      <div class="mt-4">
+        <h5 class="font-semibold text-gray-700 dark:text-gray-300">Key Achievements:</h5>
+        <ul class="list-disc list-inside text-gray-600 dark:text-gray-300 mt-2 space-y-1">
+          <li>Current GPA: 3.93/4.00 (Consistently on Dean's List)</li>
+          <li>Recipient of Full Academic Excellence Scholarship</li>
+          <li>Active participant in university competitions</li>
+          <li>Member of Informatics Student Union</li>
+        </ul>
+      </div>
+      <div class="mt-4">
+        <h5 class="font-semibold text-gray-700 dark:text-gray-300">Relevant Coursework:</h5>
+        <div class="flex flex-wrap gap-2 mt-2">
+          <span class="px-2 py-1 bg-pink-100 dark:bg-pink-900 text-pink-800 dark:text-pink-200 rounded-full text-xs font-medium">Machine Learning</span>
+          <span class="px-2 py-1 bg-pink-100 dark:bg-pink-900 text-pink-800 dark:text-pink-200 rounded-full text-xs font-medium">Data Structures</span>
+          <span class="px-2 py-1 bg-pink-100 dark:bg-pink-900 text-pink-800 dark:text-pink-200 rounded-full text-xs font-medium">Computer Vision</span>
+          <span class="px-2 py-1 bg-pink-100 dark:bg-pink-900 text-pink-800 dark:text-pink-200 rounded-full text-xs font-medium">Database Systems</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- High School Education Card -->
+    <div class="education-card bg-white dark:bg-[var(--bg-secondary)] p-6 rounded-xl shadow-lg transition-all hover:shadow-xl border border-gray-100 dark:border-[var(--border-color)] transform transition duration-500 hover:scale-[1.02] hover:shadow-pink-500/20">
+      <div class="flex flex-col md:flex-row justify-between">
+        <div>
+          <h4 class="text-xl font-bold text-gray-800 dark:text-white">Natural Science Diploma</h4>
+          <p class="text-gray-600 dark:text-gray-300">SMAN 1 Bone</p>
+          <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Mathematics and Science Concentration</p>
+        </div>
+        <div class="mt-2 md:mt-0">
+          <span class="bg-pink-100 dark:bg-pink-900 text-pink-800 dark:text-pink-200 px-3 py-1 rounded-full text-sm font-medium">2021 - 2024</span>
+        </div>
+      </div>
+      <div class="mt-4">
+        <h5 class="font-semibold text-gray-700 dark:text-gray-300">Key Achievements:</h5>
+        <ul class="list-disc list-inside text-gray-600 dark:text-gray-300 mt-2 space-y-1">
+          <li>Graduated with distinction (99/100 GPA)</li>
+          <li>Two-time Mathematics Olympiad winner</li>
+          <li>Physics Olympiad coach</li>
+          <li>Ranked 2nd best graduate</li>
+        </ul>
+      </div>
+      <div class="mt-4">
+        <h5 class="font-semibold text-gray-700 dark:text-gray-300">Leadership & Activities:</h5>
+        <div class="flex flex-wrap gap-2 mt-2">
+          <span class="px-2 py-1 bg-pink-100 dark:bg-pink-900 text-pink-800 dark:text-pink-200 rounded-full text-xs font-medium">Head of Digital Scouts</span>
+          <span class="px-2 py-1 bg-pink-100 dark:bg-pink-900 text-pink-800 dark:text-pink-200 rounded-full text-xs font-medium">Math Team Captain</span>
+          <span class="px-2 py-1 bg-pink-100 dark:bg-pink-900 text-pink-800 dark:text-pink-200 rounded-full text-xs font-medium">Science Club</span>
+          <span class="px-2 py-1 bg-pink-100 dark:bg-pink-900 text-pink-800 dark:text-pink-200 rounded-full text-xs font-medium">Student Council</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Animation on scroll
+  document.addEventListener('DOMContentLoaded', function() {
+    const educationCards = document.querySelectorAll('.education-card');
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-fade-in-up');
+          entry.target.classList.remove('opacity-0', 'translate-y-10');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    educationCards.forEach(card => {
+      card.classList.add('opacity-0', 'translate-y-10', 'transition-all', 'duration-500');
+      observer.observe(card);
+    });
+
+    // Floating effect on hover
+    educationCards.forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        const angleX = (y - centerY) / 20;
+        const angleY = (centerX - x) / 20;
+        
+        card.style.transform = `perspective(1000px) rotateX(${angleX}deg) rotateY(${angleY}deg) scale(1.02)`;
+      });
+      
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+      });
+    });
+  });
+</script>
+
+<style>
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out forwards;
+  }
+  
+  .education-card {
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    will-change: transform;
+  }
+  
+  .education-card:hover {
+    box-shadow: 0 20px 25px -5px rgba(236, 72, 153, 0.1), 
+                0 10px 10px -5px rgba(236, 72, 153, 0.04);
+  }
+</style>
+
+  <!-- Projects Section -->
+  <section id="projects" class="max-w-5xl mx-auto px-4 py-16" data-aos="fade-up">
+    <h3 class="text-3xl font-semibold mb-12 text-center">My <span class="text-pink-500 dark:text-pink-400">Projects</span></h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- DailyTaskManager -->
+      <a href="https://github.com/steljchan/Daily-Task-Manager" target="_blank" class="block group">
+        <div class="bg-white dark:bg-gray-800 h-full p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1">
+          <div class="text-pink-500 dark:text-pink-400 text-3xl mb-4">📝</div>
+          <h4 class="text-xl font-bold text-gray-800 dark:text-white">DailyTaskManager</h4>
+          <p class="text-gray-600 dark:text-gray-300 mt-2">
+            Java-based task management app using arrays, stacks, and linked lists with features like deadlines, priorities, and file storage.
+          </p>
+          <div class="mt-4 text-sm text-pink-500 dark:text-pink-400 flex items-center">
+            View on GitHub
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </div>
+        </div>
+      </a>
+
+      <!-- BajuKita -->
+      <a href="https://github.com/steljchan/Baju-Kita" target="_blank" class="block group">
+        <div class="bg-white dark:bg-gray-800 h-full p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1">
+          <div class="text-pink-500 dark:text-pink-400 text-3xl mb-4">👕</div>
+          <h4 class="text-xl font-bold text-gray-800 dark:text-white">BajuKita</h4>
+          <p class="text-gray-600 dark:text-gray-300 mt-2">
+            Python Tkinter application outlining UI and key functionalities for a clothing recommendation platform with personalized suggestions.
+          </p>
+          <div class="mt-4 text-sm text-pink-500 dark:text-pink-400 flex items-center">
+            View on GitHub
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </div>
+        </div>
+      </a>
+
+      <!-- Snake Game -->
+      <a href="https://github.com/steljchan/Snake-Game" target="_blank" class="block group">
+        <div class="bg-white dark:bg-gray-800 h-full p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1">
+          <div class="text-pink-500 dark:text-pink-400 text-3xl mb-4">🐍</div>
+          <h4 class="text-xl font-bold text-gray-800 dark:text-white">Snake Game</h4>
+          <p class="text-gray-600 dark:text-gray-300 mt-2">
+            A classic Snake game built with Python's Tkinter, featuring score tracking, speed levels, and obstacle modes.
+          </p>
+          <div class="mt-4 text-sm text-pink-500 dark:text-pink-400 flex items-center">
+            View on GitHub
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+<!-- Contact Section -->
+<section id="contact" class="max-w-5xl mx-auto px-4 py-20 dark:bg-[var(--bg-primary)]" data-aos="fade-up">
+  <div class="text-center mb-12">
+    <h3 class="text-4xl font-bold mb-4 dark:text-[var(--text-primary)]">Get In <span class="text-pink-500 dark:text-[var(--accent-color)]">Touch</span></h3>
+    <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">Have a project in mind or want to collaborate? Feel free to reach out!</p>
+  </div>
+  
+  <div class="bg-white dark:bg-[var(--bg-secondary)] rounded-2xl shadow-xl p-8 md:p-10 max-w-4xl mx-auto border border-gray-100 dark:border-[var(--border-color)]">
+    <form action="https://formsubmit.co/stellachandra718@gmail.com" method="POST" class="space-y-6">
+      <input type="hidden" name="_subject" value="New portfolio message!">
+      <input type="hidden" name="_autoresponse" value="Thank you for your message! I'll get back to you soon.">
+      <input type="hidden" name="_template" value="box">
+      <input type="hidden" name="_next" value="https://yourdomain.com/thank-you.html">
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label for="name" class="block text-gray-700 dark:text-[var(--text-secondary)] mb-2 font-medium">Your Name<span class="text-pink-500">*</span></label>
+          <input type="text" id="name" name="name" required 
+                 class="w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors placeholder-gray-400 dark:placeholder-gray-500"
+                 placeholder="John Doe">
+        </div>
+        
+        <div>
+          <label for="email" class="block text-gray-700 dark:text-[var(--text-secondary)] mb-2 font-medium">Your Email<span class="text-pink-500">*</span></label>
+          <input type="email" id="email" name="email" required 
+                 class="w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors placeholder-gray-400 dark:placeholder-gray-500"
+                 placeholder="john@example.com">
+        </div>
+      </div>
+      
+      <div>
+        <label for="message" class="block text-gray-700 dark:text-[var(--text-secondary)] mb-2 font-medium">Your Message<span class="text-pink-500">*</span></label>
+        <textarea id="message" name="message" rows="6" required 
+                  class="w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors placeholder-gray-400 dark:placeholder-gray-500"
+                  placeholder="Tell me about your project..."></textarea>
+      </div>
+      
+      <button type="submit" class="w-full px-6 py-3.5 bg-gradient-to-r from-pink-500 to-pink-600 dark:from-pink-600 dark:to-pink-700 text-white rounded-lg font-semibold hover:from-pink-600 hover:to-pink-700 transition-all flex items-center justify-center shadow-lg hover:shadow-pink-500/30 active:scale-[0.98]">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+        </svg>
+        Send Message
+      </button>
+    </form>
+  </div>
+</section>
+
+<style>
+  /* Consistent with About Me section animations */
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-fade-in {
+    opacity: 0;
+    animation: fade-in 0.6s ease-out forwards;
+    animation-delay: var(--delay, 0);
+  }
+
+  /* Form styling */
+  input, textarea {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  input:focus, textarea:focus {
+    box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.2);
+  }
+  
+  /* Button animation */
+  button[type="submit"] {
+    transition: all 0.3s ease, transform 0.2s ease;
+  }
+  
+  button[type="submit"]:hover {
+    transform: translateY(-2px);
+  }
+  
+  button[type="submit"]:active {
+    transform: scale(0.98);
+  }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Add intersection observer for scroll animations
+  const contactElements = document.querySelectorAll('#contact [class*="animate-"]');
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  });
+
+  contactElements.forEach(element => {
+    observer.observe(element);
+  });
+});
+</script>
+
+
+<!-- Footer Section -->
+<footer class="force-show bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-300 py-12 border-t border-gray-200 dark:border-gray-700 w-full">
+    <div class="max-w-6xl mx-auto px-4">
+        <!-- Social Media Links -->
+        <div class="flex justify-center space-x-6 mb-8">
+            <!-- Email -->
+            <a href="mailto:stellachandra718@gmail.com" 
+                class="p-3 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-pink-100 dark:hover:bg-pink-900/50 transition-colors hover:-translate-y-1"
+                aria-label="Email">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                </svg>
+            </a>
+            
+            <!-- GitHub -->
+            <a href="https://github.com/steljchan" target="_blank" rel="noopener noreferrer"
+                class="p-3 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-pink-100 dark:hover:bg-pink-900/50 transition-colors hover:-translate-y-1"
+                aria-label="GitHub">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+            </a>
+            
+            <!-- LinkedIn -->
+            <a href="https://www.linkedin.com/in/stella-j-chandra-162303340/" target="_blank" rel="noopener noreferrer"
+                class="p-3 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-pink-100 dark:hover:bg-pink-900/50 transition-colors hover:-translate-y-1"
+                aria-label="LinkedIn">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                </svg>
+            </a>
+        </div>
+        
+        <!-- Copyright Text -->
+        <div class="text-center">
+            <p class="text-gray-700 dark:text-gray-300">&copy; <span id="current-year">2025</span> Stella J. Chandra. All rights reserved.</p>
+            <p class="mt-2 text-gray-500 dark:text-gray-400">Built with ❤️ and Tailwind CSS</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Simple copyright year update
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+    
+    // Debugging: Log untuk memastikan footer ada di DOM
+    console.log('Footer element:', document.querySelector('footer'));
+    
+    // Force show footer dengan JavaScript sebagai cadangan
+    document.addEventListener('DOMContentLoaded', function() {
+        const footer = document.querySelector('footer');
+        if (footer) {
+            footer.classList.add('force-show');
+            console.log('Footer should be visible now');
+        } else {
+            console.error('Footer element not found!');
+        }
+    });
+</script>
+</body>
+
+
+<script>
+  // Initialize when DOM is loaded
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize AOS
+    if (typeof AOS !== 'undefined') {
+      AOS.init({
+        duration: 800,
+        easing: 'ease-in-out',
+        once: true
+      });
+    }
+
+    // Dark Mode System
+    const initDarkMode = () => {
+      const html = document.documentElement;
+      const savedMode = localStorage.getItem('darkMode');
+      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      
+      const isDark = savedMode ? savedMode === 'true' : systemDark;
+      html.classList.toggle('dark', isDark);
+      updateDarkModeIcons(isDark);
+    };
+
+    const updateDarkModeIcons = (isDark) => {
+      document.querySelectorAll('.dark-mode-icon').forEach(icon => {
+        icon.classList.toggle('hidden', !isDark);
+      });
+      document.querySelectorAll('.light-mode-icon').forEach(icon => {
+        icon.classList.toggle('hidden', isDark);
+      });
+    };
+
+    const toggleDarkMode = () => {
+      const html = document.documentElement;
+      const isDark = !html.classList.contains('dark');
+      
+      html.classList.toggle('dark', isDark);
+      localStorage.setItem('darkMode', isDark);
+      updateDarkModeIcons(isDark);
+    };
+
+    // Mobile Menu
+    const toggleMenu = () => {
+      const menu = document.getElementById('mobile-menu');
+      const icon = document.getElementById('menu-icon');
+      
+      menu.classList.toggle('hidden');
+      icon.textContent = menu.classList.contains('hidden') ? '☰' : '✕';
+      document.body.style.overflow = menu.classList.contains('hidden') ? '' : 'hidden';
+    };
+
+    // Initialize
+    initDarkMode();
+    
+    // Event Listeners
+    document.querySelectorAll('[data-darkmode-toggle]').forEach(btn => {
+      btn.addEventListener('click', toggleDarkMode);
+    });
+    
+    document.getElementById('mobile-menu-button')?.addEventListener('click', toggleMenu);
+    
+    document.querySelectorAll('#mobile-menu a').forEach(link => {
+      link.addEventListener('click', toggleMenu);
+    });
+
+    // Smooth Scrolling
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href'))?.scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+  });
+
+  // System preference listener
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+    if (!localStorage.getItem('darkMode')) {
+      document.documentElement.classList.toggle('dark', e.matches);
+    }
+  });
+</script>
+
